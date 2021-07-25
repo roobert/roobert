@@ -1,8 +1,5 @@
-all: record trim
+record: clean
+	@bin/record.sh
 
-trim:
-	gifsicle --crop 0,30-1032,721 t-rec.gif > animation.gif
-
-record:
-	t-rec --natural --decor none -e2s ./animation.py
-
+clean:
+	rm -v t-rec*.gif

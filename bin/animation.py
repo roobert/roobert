@@ -143,7 +143,7 @@ def prompt_messages(pad, prompt_line, indent):
 
     prompt_message(pad, y, x, "Hi, my name is Rob!")
     sleep(1)
-    backspace(pad, y, x + 2 + len("Hi, my name is Rob!"), "Hi, my name is Rob!")
+    backspace(pad, y, x + 2 + len("Hi, my name is Rob!"), "Hi, my name is Rob! ")
 
     prompt_message(pad, y, x, "I love coding..")
     sleep(2)
@@ -163,9 +163,6 @@ def prompt_messages(pad, prompt_line, indent):
 
     reset_cursor(pad)
     sleep(2)
-
-    # clear_line(pad, y)
-    # sleep(2)
 
 
 def twinkle(pad, y, x):
@@ -235,10 +232,10 @@ def frame(pad, y, x, frame, interval):
 
 def clear_line(pad, line_number):
     _, width = pad.getmaxyx()
-    line = " " * (width - 1)
+    line = " " * width
     pad.addstr(line_number, 0, line)
     reset_cursor(pad)
-    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
+    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS)
 
 
 def clear_char(pad, y, x):
