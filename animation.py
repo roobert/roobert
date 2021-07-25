@@ -3,10 +3,6 @@
 # github.com/roobert animated README.md!
 #
 
-# TODO
-# * refactor
-# * turn cursor off/on
-
 import curses
 from curses import error
 from time import sleep
@@ -162,6 +158,9 @@ def prompt_messages(pad, prompt_line, indent):
     backspace(pad, y, x + 2 + len("I love infrastructure.."), "infrastructure..")
 
     typewriter(pad, y, x + 2 + len("I love "), "automation!")
+    sleep(2)
+    backspace(pad, y, x + 2 + len("I love automation!"), " > I love automation!")
+
     reset_cursor(pad)
     sleep(2)
 
@@ -284,7 +283,7 @@ def blursed_heart(pad, y, x):
 
 
 def reset_cursor(pad):
-    height, width = pad.getmaxyx()
+    height, width = curses.LINES, curses.COLS
     pad.move(height - 1, width - 1)
     pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
 
