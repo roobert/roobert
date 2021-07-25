@@ -5,9 +5,8 @@
 
 # TODO
 # * auto positioning
-# * star mask
-# * switch from window to pad
-# * improve horizon
+# * refactor
+# * turn cursor off/on
 
 import curses
 from curses import error
@@ -18,149 +17,183 @@ import random
 def main(stdscr):
     curses.use_default_colors()
 
-    camera_pan(stdscr)
-    starfield(stdscr)
-    type_title(stdscr)
-    title(stdscr)
-    typewriter(stdscr, 20, 30, "CORPORATION")
+    title_top = 10
+    prompt_line = title_top + 10
+    indent = int((curses.COLS / 2)) - 20
+    horizon = 19
+
+    curses.curs_set(0)
+    star_coords, pad = camera_pan_down(stdscr, horizon)
     sleep(2)
-    shoot(stdscr, 20, 30, "CORPORATION")
-    twinkle(stdscr, 2, 5)
-    twinkle(stdscr, 20, 60)
-    prompt_messages(stdscr)
-    atomise(stdscr)
+
+    type_title(pad, title_top, indent)
+    title(pad, title_top, indent)
+    typewriter(pad, prompt_line, indent + 13, "CORPORATION")
+    sleep(2)
+
+    twinkle(pad, 2, 5)
+    twinkle(pad, prompt_line, 60)
+    sleep(1)
+
+    shoot(pad, prompt_line, indent + 13, "CORPORATION")
+
+    curses.curs_set(1)
+    prompt_messages(pad, prompt_line, indent)
+    curses.curs_set(0)
+
+    atomise(pad, star_coords, title_top, indent)
+
+    reset_cursor(pad)
+    sleep(5)
 
 
-def camera_pan(stdscr):
-    horizon = 15
+def camera_pan_down(stdscr, horizon):
+    horizon = 19
     height, width = stdscr.getmaxyx()
-    for y in range(0, height):
-        line = "#" * (width - 2)
-        stdscr.addstr(y, 0, line)
-        stdscr.refresh()
+    pad = curses.newpad(height * 2, width)
 
-    height, width = stdscr.getmaxyx()
-    for y in range(0, height - horizon):
-        line = " " * (width - 2)
-        stdscr.addstr(y, 0, line)
-        reset_cursor(stdscr)
-        stdscr.refresh()
-        sleep(0.05)
+    star_coords = gen_starfield(pad, height, width, horizon)
+    gen_horizon(pad, height, width, horizon)
+
+    for y in range(height, 0, -1):
+        try:
+            pad.refresh(0, 0, y, 0, height - 1, width - 1)
+        except error:
+            pass
+        sleep(0.1)
+
+    return star_coords, pad
 
 
-def starfield(stdscr, interval=0.1):
-    horizon = 15
+def gen_starfield(pad, height, width, horizon):
+    star_coords = {}
     for _ in range(0, 100):
-        height, width = stdscr.getmaxyx()
-        height = height - horizon
-        x = random.uniform(0, width)
-        y = random.uniform(0, height)
-        stdscr.addch(int(y), int(x), ".")
-        reset_cursor(stdscr)
-        stdscr.refresh()
-        sleep(interval)
+        y = int(random.uniform(0, height - horizon))
+        x = int(random.uniform(0, width))
+
+        if not star_coords.get(y):
+            star_coords[y] = []
+        star_coords[y].append(x)
+
+        pad.addch(y, x, ".")
+    return star_coords
 
 
-def type_title(stdscr):
-    x = 17
-    y = 10
-    frame(stdscr, y, x, letter0, 0.75)
-    frame(stdscr, y, x + 10, letter1, 0.75)
-    frame(stdscr, y, x + 20, letter2, 0.75)
-    frame(stdscr, y, x + 30, letter3, 0.75)
+def gen_horizon(pad, height, width, horizon):
+    # horizon
+    line = "_" * width
+    pad.addstr(height - horizon, 0, line)
+    pad.addstr(height - (horizon - 2), 0, line)
+    pad.addstr(height - (horizon - 5), 0, line)
+    pad.addstr(height - (horizon - 10), 0, line)
 
 
-def title(stdscr):
-    x = 17
-    y = 10
-    frame(stdscr, y, x, frame1, 3)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame2, 0.1)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame1, 0.25)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame0, 0.1)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame1, 0.25)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame0, 0.25)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame1, 0.1)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame0, 0.1)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame1, 0.1)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame0, 0.1)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame3, 0.1)
-    frame(stdscr, y, x, blank, 0)
-    frame(stdscr, y, x, frame1, 0.1)
+def starfield_refresh(pad, star_coords):
+    for y, values in star_coords.items():
+        for x in values:
+            pad.addch(y, x, ".")
+    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
 
 
-def shoot(stdscr, y, x, s):
+def type_title(pad, title_top, indent):
+    x = indent
+    y = title_top
+    frame(pad, y, x, letter0, 0.75)
+    frame(pad, y, x + 10, letter1, 0.75)
+    frame(pad, y, x + 20, letter2, 0.75)
+    frame(pad, y, x + 30, letter3, 0.75)
+
+
+def title(pad, title_top, indent):
+    x = indent
+    y = title_top
+    frame(pad, y, x, frame1, 3)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame2, 0.1)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame1, 0.25)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame0, 0.1)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame1, 0.25)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame0, 0.25)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame1, 0.1)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame0, 0.1)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame1, 0.1)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame0, 0.1)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame3, 0.1)
+    frame(pad, y, x, blank, 0)
+    frame(pad, y, x, frame1, 0.1)
+
+
+def shoot(pad, y, x, s):
     for i in _shuffle(list(range(x, x + len(s)))):
-        stdscr.addch(y, i, " ")
-        reset_cursor(stdscr)
+        pad.addch(y, i, " ")
+        reset_cursor(pad)
         interval = random.uniform(0.0, 0.3)
         sleep(interval)
-    reset_cursor(stdscr)
+    reset_cursor(pad)
 
 
-def prompt_messages(stdscr):
-    y = 20
+def prompt_messages(pad, prompt_line, indent):
+    y = prompt_line
+    x = indent
 
-    prompt_message(stdscr, "Hi, my name is Rob!")
+    prompt_message(pad, y, x, "Hi, my name is Rob!")
     sleep(1)
-    backspace(stdscr, y, 18, "Hi, my name is Rob!")
+    backspace(pad, y, x + 2 + len("Hi, my name is Rob!"), "Hi, my name is Rob!")
 
-    prompt_message(stdscr, "I love coding")
+    prompt_message(pad, y, x, "I love coding..")
     sleep(2)
-    backspace(stdscr, y, 24, "coding")
+    backspace(pad, y, x + 2 + len("I love coding.."), "coding..")
 
-    typewriter(stdscr, y, 26, "collaboration")
+    typewriter(pad, y, x + 2 + len("I love "), "collaboration..")
     sleep(2)
-    backspace(stdscr, y, 24, "collaboration")
+    backspace(pad, y, x + 2 + len("I love collaboration.."), "collaboration..")
 
-    typewriter(stdscr, y, 26, "infrastructure")
+    typewriter(pad, y, x + 2 + len("I love "), "infrastructure..")
     sleep(2)
-    backspace(stdscr, y, 24, "infrastructure")
+    backspace(pad, y, x + 2 + len("I love infrastructure.."), "infrastructure..")
 
-    typewriter(stdscr, y, 26, "automation!")
-    sleep(2)
-    clear_line(stdscr, y)
-
-    reset_cursor(stdscr)
+    typewriter(pad, y, x + 2 + len("I love "), "automation!")
+    reset_cursor(pad)
     sleep(2)
 
-
-def twinkle(stdscr, y, x):
-    frame(stdscr, y, x, star0, 0.1)
-    frame(stdscr, y, x, blank_star, 0)
-    frame(stdscr, y, x, star1, 0.2)
-    frame(stdscr, y, x, blank_star, 0)
-    frame(stdscr, y, x, star2, 0.2)
-    frame(stdscr, y, x, blank_star, 0)
-    frame(stdscr, y, x, star3, 0.2)
-    frame(stdscr, y, x, blank_star, 0)
-    frame(stdscr, y, x, star4, 0.2)
-    frame(stdscr, y, x, blank_star, 0)
-    frame(stdscr, y, x, star5, 0.1)
-    frame(stdscr, y, x, blank_star, 0)
-    frame(stdscr, y, x, star6, 0.1)
-    frame(stdscr, y, x, blank_star, 0)
-    frame(stdscr, y, x, star7, 0.1)
-    frame(stdscr, y, x, blank_star, 0)
+    clear_line(pad, y)
+    sleep(2)
 
 
-def atomise(stdscr):
+def twinkle(pad, y, x):
+    frame(pad, y, x, star0, 0.1)
+    frame(pad, y, x, blank_star, 0)
+    frame(pad, y, x, star1, 0.2)
+    frame(pad, y, x, blank_star, 0)
+    frame(pad, y, x, star2, 0.2)
+    frame(pad, y, x, blank_star, 0)
+    frame(pad, y, x, star3, 0.2)
+    frame(pad, y, x, blank_star, 0)
+    frame(pad, y, x, star4, 0.2)
+    frame(pad, y, x, blank_star, 0)
+    frame(pad, y, x, star5, 0.1)
+    frame(pad, y, x, blank_star, 0)
+    frame(pad, y, x, star6, 0.1)
+    frame(pad, y, x, blank_star, 0)
+    frame(pad, y, x, star7, 0.1)
+    frame(pad, y, x, blank_star, 0)
+
+
+def atomise(pad, star_coords, title_top, indent):
     lines = frame3.split("\n")
-    top_line = 12
     count = 0
-    indent = 16
 
     # iterate through the line numbers on the screen which contain the title
-    for line_number in range(top_line, top_line + len(lines), 1):
+    for line_number in range(title_top, title_top + len(lines), 1):
 
         # iterate through each line number above the title, to 0
         for move_to in range(line_number - 1, -1, -1):
@@ -168,19 +201,21 @@ def atomise(stdscr):
             # iterate across the line randomly
             for x in _shuffle(list(range(indent, indent + len(lines[count]), 1))):
                 try:
-                    c = stdscr.inch(move_to + 1, x)
-                    clear_char(stdscr, move_to + 1, x)
+                    c = pad.inch(move_to + 1, x)
+                    clear_char(pad, move_to + 1, x)
                     y_new = move_to + int(random.uniform(-1, -10))
-                    stdscr.addch(y_new, x, c)
+                    pad.addch(y_new, x, c)
 
-                    reset_cursor(stdscr)
-                    stdscr.refresh()
+                    reset_cursor(pad)
+                    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
                     sleep(0.001)
 
                 # ignore errors when writing to off-screen co-ords
                 except error:
                     pass
-        clear_line(stdscr, 0)
+
+        clear_line(pad, 0)
+        starfield_refresh(pad, star_coords)
         count += 1
 
 
@@ -189,71 +224,69 @@ def _shuffle(array):
     return array
 
 
-def frame(stdscr, y, x, frame, interval):
+def frame(pad, y, x, frame, interval):
     row = y
     for line in frame.split("\n"):
-        stdscr.addstr(row, x, line)
-        reset_cursor(stdscr)
-        stdscr.refresh()
+        pad.addstr(row, x, line)
+        reset_cursor(pad)
+        pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
         row += 1
     sleep(interval)
 
 
-def clear_line(stdscr, line_number):
-    _, width = stdscr.getmaxyx()
+def clear_line(pad, line_number):
+    _, width = pad.getmaxyx()
     line = " " * (width - 1)
-    stdscr.addstr(line_number, 0, line)
-    reset_cursor(stdscr)
-    stdscr.refresh()
+    pad.addstr(line_number, 0, line)
+    reset_cursor(pad)
+    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
 
 
-def clear_char(stdscr, y, x):
-    stdscr.addch(y, x, " ")
-    stdscr.refresh()
+def clear_char(pad, y, x):
+    pad.addch(y, x, " ")
+    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
 
 
-def typewriter(stdscr, y, x, s):
+def typewriter(pad, y, x, s):
     for c in s:
-        stdscr.addch(y, x, c)
-        stdscr.refresh()
+        pad.addch(y, x, c)
+        pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
         interval = random.uniform(0.0, 0.3)
         sleep(interval)
         x += 1
 
 
-def backspace(stdscr, y, x, word):
-    x = x + 1 + len(word)
+def backspace(pad, y, x, word):
     i = 0
     while i < len(word):
-        stdscr.addch(y, (x - i), " ")
-        stdscr.move(y, (x - i))
-        stdscr.refresh()
-        interval = 0.02
+        pad.addch(y, (x - i), " ")
+        pad.move(y, (x - i))
+        pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
+        interval = 0.03
         sleep(interval)
         i += 1
 
 
-def prompt_message(stdscr, s):
-    indent = 17
-    y, x = 20, indent + 2
+def prompt_message(pad, prompt_line, indent, s):
+    y, x = prompt_line, indent + 2
 
-    stdscr.addstr(y, indent, "> ")
-    stdscr.refresh()
+    pad.addstr(y, indent, "> ")
+    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
     sleep(1.5)
 
-    typewriter(stdscr, y, x, s)
+    typewriter(pad, y, x, s)
 
 
-def blursed_heart(stdscr, y, x):
-    stdscr.addch(y, x, '❤️"')
-    stdscr.move(y, x)
-    stdscr.refresh()
+def blursed_heart(pad, y, x):
+    pad.addch(y, x, '❤️"')
+    pad.move(y, x)
+    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
 
 
-def reset_cursor(stdscr):
-    height, width = stdscr.getmaxyx()
-    stdscr.move(height - 1, width - 1)
-    stdscr.refresh()
+def reset_cursor(pad):
+    height, width = pad.getmaxyx()
+    pad.move(height - 1, width - 1)
+    pad.refresh(0, 0, 0, 0, curses.LINES - 1, curses.COLS - 1)
 
 
 letter0 = """
