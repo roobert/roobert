@@ -4,7 +4,6 @@
 #
 
 # TODO
-# * auto positioning
 # * refactor
 # * turn cursor off/on
 
@@ -31,8 +30,10 @@ def main(stdscr):
     typewriter(pad, prompt_line, indent + 13, "CORPORATION")
     sleep(2)
 
-    twinkle(pad, 2, 5)
-    twinkle(pad, prompt_line, 60)
+    star_left_indent = int((curses.COLS / 2) / 2)
+    star_right_indent = int((curses.COLS / 2) + star_left_indent)
+    twinkle(pad, 2, star_left_indent)
+    twinkle(pad, prompt_line, star_right_indent)
     sleep(1)
 
     shoot(pad, prompt_line, indent + 13, "CORPORATION")
@@ -41,21 +42,20 @@ def main(stdscr):
     prompt_messages(pad, prompt_line, indent)
     curses.curs_set(0)
 
-    atomise(pad, star_coords, title_top, indent)
+    atomise(pad, star_coords, title_top + 1, indent)
 
     reset_cursor(pad)
     sleep(5)
 
 
 def camera_pan_down(stdscr, horizon):
-    horizon = 19
     height, width = stdscr.getmaxyx()
     pad = curses.newpad(height * 2, width)
 
     star_coords = gen_starfield(pad, height, width, horizon)
     gen_horizon(pad, height, width, horizon)
 
-    for y in range(height, 0, -1):
+    for y in range(height, -1, -1):
         try:
             pad.refresh(0, 0, y, 0, height - 1, width - 1)
         except error:
@@ -165,8 +165,8 @@ def prompt_messages(pad, prompt_line, indent):
     reset_cursor(pad)
     sleep(2)
 
-    clear_line(pad, y)
-    sleep(2)
+    # clear_line(pad, y)
+    # sleep(2)
 
 
 def twinkle(pad, y, x):
