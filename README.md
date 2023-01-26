@@ -9,7 +9,7 @@ NeoVIM:
 * [nightshift.vim](https://github.com/roobert/nightshift.vim)
 * [bufferline-cycle-windowless.nvim](https://github.com/roobert/bufferline-cycle-windowless.nvim)
 * [search-replace.nvim](https://github.com/roobert/search-replace.nvim)
-* [tailwind-colorizer-cmp.nvim](https://github.com/roobert/tailwind-colorizer-cmp.nvim)
+* [tailwindcss-colorizer-cmp.nvim](https://github.com/roobert/tailwindcss-colorizer-cmp.nvim)
 * [twin-sh](https://github.com/roobert/twin-sh)
 * [neoscroll-motions.nvim](https://github.com/roobert/neoscroll-motions.nvim)
 * [f-string-toggle.nvim](https://github.com/roobert/f-string-toggle.nvim)
