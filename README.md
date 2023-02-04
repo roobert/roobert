@@ -5,7 +5,7 @@
 * 💖 - My [Neovim theme](https://github.com/roobert/nightshift.vim)
 * 🌱 - Available for part-time contract work [here](mailto:roobert@gmail.com)
 
-NeoVIM:
+NeoVIM a week for 2023:
 * ✨ [nightshift.vim](https://github.com/roobert/nightshift.vim)
 * 🪟 [bufferline-cycle-windowless.nvim](https://github.com/roobert/bufferline-cycle-windowless.nvim)
 * 🧐 [search-replace.nvim](https://github.com/roobert/search-replace.nvim)
