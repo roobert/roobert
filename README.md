@@ -12,7 +12,7 @@ NeoVIM a week for 2023:
 * 🤗 [surround-ui.nvim](https://github.com/roobert/surround-ui.nvim)
 * 🪄 [twin-sh](https://github.com/roobert/twin-sh)
 * 🪟 [bufferline-cycle-windowless.nvim](https://github.com/roobert/bufferline-cycle-windowless.nvim)
+* 🌐 [node-type.nvim](https://github.com/roobert/node-type.nvim)
 * (WIP) [neoscroll-motions.nvim](https://github.com/roobert/neoscroll-motions.nvim)
 * (WIP) [f-string-toggle.nvim](https://github.com/roobert/f-string-toggle.nvim)
-* (WIP) [node-type.nvim](https://github.com/roobert/node-type.nvim)
 * (WIP) [tldr-lang.nvim](https://github.com/roobert/tldr-lang.nvim)
