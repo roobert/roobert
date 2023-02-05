@@ -7,10 +7,12 @@
 
 NeoVIM a week for 2023:
 * ✨ [nightshift.vim](https://github.com/roobert/nightshift.vim)
-* 🪟 [bufferline-cycle-windowless.nvim](https://github.com/roobert/bufferline-cycle-windowless.nvim)
-* 🧐 [search-replace.nvim](https://github.com/roobert/search-replace.nvim)
 * 🌈 [tailwindcss-colorizer-cmp.nvim](https://github.com/roobert/tailwindcss-colorizer-cmp.nvim)
-* 🪄 [twin-sh](https://github.com/roobert/twin-sh)
+* 🧐 [search-replace.nvim](https://github.com/roobert/search-replace.nvim)
 * 🤗 [surround-ui.nvim](https://github.com/roobert/surround-ui.nvim)
-* (WIP) [neoscroll-motions.nvim](https://github.com/roobert/neoscroll-motions.nvim)
+* 🪄 [twin-sh](https://github.com/roobert/twin-sh)
+* 🪟 [bufferline-cycle-windowless.nvim](https://github.com/roobert/bufferline-cycle-windowless.nvim)
+* (WIP) (neoscroll-motions.nvim)[https://github.com/roobert/neoscroll-motions.nvim]
 * (WIP) [f-string-toggle.nvim](https://github.com/roobert/f-string-toggle.nvim)
+* (WIP) (node-type.nvim)[https://github.com/roobert/node-type.nvim]
+* (WIP) (tldr-lang.nvim)[https://github.com/roobert/tldr-lang.nvim]
