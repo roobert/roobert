@@ -15,4 +15,5 @@ NeoVIM a week for 2023:
 * 🌻 [f-string-toggle.nvim](https://github.com/roobert/f-string-toggle.nvim)
 * 🏃 [tldr-lang.nvim](https://github.com/roobert/tldr-lang.nvim)
 * 🌐 [node-type.nvim](https://github.com/roobert/node-type.nvim)
+* (WIP) [statusline-action-hints](https://github.com/roobert/statusline-action-hints.nvim)
 * (WIP) [neoscroll-motions.nvim](https://github.com/roobert/neoscroll-motions.nvim)
