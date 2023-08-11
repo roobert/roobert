@@ -18,4 +18,4 @@ Neovim a week for 2023:
 * ⚡ [statusline-action-hints.nvim](https://github.com/roobert/statusline-action-hints.nvim)
 * (WIP) [neoscroll-motions.nvim](https://github.com/roobert/neoscroll-motions.nvim)
 * 🌲 [tabtree.nvim](https://github.com/roobert/tabtree.nvim)
-* 🚁 [hoversplit](https://github.com/roobert/hoversplit.nvim)
+* 🚁 [hoversplit.nvim](https://github.com/roobert/hoversplit.nvim)
