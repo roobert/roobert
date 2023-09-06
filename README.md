@@ -4,7 +4,7 @@
 * ✨ - Writing blog posts [here](https://roobert.github.io)
 * 🌱 - Available for part-time contract work [here](mailto:roobert@gmail.com)
 
-Neovim 💖:
+Neovim 💖
 * ✨ [nightshift.vim](https://github.com/roobert/nightshift.vim)
 * 🌈 [tailwindcss-colorizer-cmp.nvim](https://github.com/roobert/tailwindcss-colorizer-cmp.nvim)
 * 🧐 [search-replace.nvim](https://github.com/roobert/search-replace.nvim)
