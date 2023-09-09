@@ -17,3 +17,4 @@ Neovim 💖
 * ⚡ [action-hints.nvim](https://github.com/roobert/action-hints.nvim)
 * 🌲 [tabtree.nvim](https://github.com/roobert/tabtree.nvim)
 * 🚁 [hoversplit.nvim](https://github.com/roobert/hoversplit.nvim)
+* 🚀 [activate.nvim](https://github.com/roobert/activate.nvim]
