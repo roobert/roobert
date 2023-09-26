@@ -18,3 +18,4 @@ Neovim 💖
 * 🌲 [tabtree.nvim](https://github.com/roobert/tabtree.nvim)
 * 🚁 [hoversplit.nvim](https://github.com/roobert/hoversplit.nvim)
 * 🚀 [activate.nvim](https://github.com/roobert/activate.nvim)
+* 🎨 [palette.nvim](https://github.com/roobert/palette.nvim)
